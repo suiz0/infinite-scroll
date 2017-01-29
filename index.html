@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Infinite Scroll Sample</title>
+    <style>
+    ul {
+        list-style: none;
+        margin: 0px;
+        padding: 0px;
+    }
+    li {
+        border-bottom: 2px solid #ccc;
+        padding: 15px;
+    }
+    </style>
+</head>
+<body>
+    <h1>Teachers</h1>
+    <ul id="data"></ul>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script src="jdebounce/jdebounce.js"></script>
+    <script type="text/javascript">
+    jQuery(function($) {
+        var document$ = $(document);
+        var window$ = $(window);
+
+        document$.on("scroll", $.debounce(function(ev) {
+            var offset = window$.height() + document$.scrollTop();
+            if (offset + 250 >= document$.height()) {
+                loadChuck();
+            }
+        }, 500));
+
+        function printData(response) {
+            var rootElement = $("#data");
+            for (var i = 0; i < response.length; i++) {
+                rootElement.append("<li>" + response[i].name + "</li>");
+            }
+        }
+
+        function loadChuck(index) {
+            var chunkURL = "data/chunk.json";
+            $.get(chunkURL, null, printData, 'json');
+        }
+
+        loadChuck();
+    });
+    </script>
+</body>
+</html>
